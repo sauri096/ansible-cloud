@@ -1,0 +1,13 @@
+---
+# Seul le module raw fonctionne sans Python sur la cible
+- name: Vérifier et installer Python 3 sur les nœuds
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Installer Python 3 s'il est absent
+      ansible.builtin.raw: >-
+        test -e /usr/bin/python3 && echo present ||
+        (apt-get update && apt-get install -y python3 && echo installed)
+      register: python_bootstrap
+      changed_when: "'installed' in python_bootstrap.stdout"

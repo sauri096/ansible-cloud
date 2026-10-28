@@ -1,4 +1,18 @@
+# Tout ignorer par défaut, puis autoriser ce qui fait partie du projet
 /*
 !/.gitignore
+!/.gitattributes
 !/.github/
-!/playbook/
+!/.yamllint
+!/.ansible-lint
+!/README.md
+!/ansible.cfg
+!/requirements.yml
+!/inventories/
+!/playbooks/
+!/roles/
+!/app/
+
+*.retry
+.vault_pass*
+__pycache__/
