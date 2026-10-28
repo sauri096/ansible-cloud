@@ -1,0 +1,29 @@
+---
+plugin: digitalocean.cloud.droplets
+strict: true
+attributes:
+  - id
+  - memory
+  - vcpus
+  - disk
+  - size
+  - image
+  - networks
+  - volume_ids
+  - tags
+  - region
+groups:
+  managed_nodes: inventory_hostname.startswith('managed')
+keyed_groups:
+  - key: region.slug
+    prefix: region
+    separator: "_"
+  - key: do_tags | map('lower') | list
+    prefix: ""
+    separator: ""
+compose:
+  ansible_host: networks.v4 | selectattr('type', 'equalto', 'public') | map(attribute='ip_address') | first
+  do_size_class: size.description | lower
+  do_distro: image.distribution | lower
+  ansible_user: "'root'"
+  ansible_python_interpreter: "'/usr/bin/python3'"
