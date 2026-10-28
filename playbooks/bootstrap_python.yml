@@ -1,15 +1,13 @@
 ---
- - name: Verifer et installer Python3 sur les nodes
-   hosts: all
-   gather_facts: false
-   become: true
-   tasks:
-     - name: Verifier si Python3 est installé
-       ansible.builtin.command: which python3
-       register: python_install_check
-       ignore_errors: true
-       changed_when: false
-     - name: Installer Python3 si non present
-       ansible.builtin.raw: apt update && apt install -y python3
-       when: python_install_check.rc != 0
-       
+# Seul le module raw fonctionne sans Python sur la cible
+- name: Vérifier et installer Python 3 sur les nœuds
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Installer Python 3 s'il est absent
+      ansible.builtin.raw: >-
+        test -e /usr/bin/python3 && echo present ||
+        (apt-get update && apt-get install -y python3 && echo installed)
+      register: python_bootstrap
+      changed_when: "'installed' in python_bootstrap.stdout"
